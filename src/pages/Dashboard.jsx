@@ -13,30 +13,22 @@ function Dashboard() {
         <h4 className="mb-4">Real Estate CRM</h4>
 
         <ul className="nav flex-column">
-
           <li className="nav-item mb-2">
-            <Link to="/" className="nav-link text-white">
-              Dashboard
-            </Link>
+            <Link to="/" className="nav-link text-white">Dashboard</Link>
           </li>
 
           <li className="nav-item mb-2">
-            <Link to="/leads" className="nav-link text-white">
-              Leads
-            </Link>
+            <Link to="/leads" className="nav-link text-white">Leads</Link>
           </li>
 
           <li className="nav-item mb-2">
-            <Link to="/inquire" className="nav-link text-white">
-              Inquiry
-            </Link>
+            <Link to="/inquire" className="nav-link text-white">Inquiry</Link>
           </li>
-
         </ul>
       </div>
 
-      {/* Page Content */}
-      <div className="container-fluid mt-2">
+      {/* Main Content */}
+      <div className="container-fluid p-4">
         <Outlet />
       </div>
 

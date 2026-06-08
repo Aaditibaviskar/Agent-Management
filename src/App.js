@@ -2,6 +2,8 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Dashboard from "./pages/Dashboard";
 import InquiryForm from "./pages/InquiryPage";
 import LeadPage from "./pages/LeadPage";
+import Home from "./pages/Home";
+import "./styles/crm.css";
 
 function App() {
   return (
@@ -10,6 +12,7 @@ function App() {
       <Routes>
 
         <Route path="/" element={<Dashboard />}>
+        <Route index element={<Home />} />
 
           <Route index element={<h2>Dashboard Home</h2>} />
 

@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = "http://localhost:8080/api/inquiries";
+const API_URL = "http://localhost:8080/leads";
 
 export const saveInquiry = (data) => {
   return axios.post(API_URL, data);
