@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { saveInquiry } from "../services/inquiryService";
+import { submitInquiry } from "../../services/inquiryService";
 
 function InquiryForm() {
   const [inquiryType, setInquiryType] = useState("");
@@ -125,17 +125,45 @@ function InquiryForm() {
   };
 
   // ================= SUBMIT =================
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+const handleSubmit = async (e) => {
+  e.preventDefault();
 
-    try {
-      await saveInquiry(formData);
-      alert("Inquiry Saved Successfully");
-    } catch (error) {
-      console.error("Submit error:", error);
-      alert("Failed to save inquiry");
-    }
-  };
+  const payload = {
+  customer: {
+    customerName: formData.customerName,
+    customerPhone: formData.mobileNo,
+    customerEmail: formData.email
+  },
+
+  region: {
+    regionId: Number(formData.regionId)
+  },
+
+  project: {
+    projectId: Number(formData.projectId)
+  },
+
+  property: {
+    propertyId: Number(formData.propertyId)
+  },
+
+  budget: Number(formData.budget),
+  remarks: formData.remarks
+};
+
+console.log("Sending payload:");
+console.log(JSON.stringify(payload, null, 2));
+
+  try {
+    console.log("Sending payload:", payload);
+
+    await axios.post("http://localhost:8080/leads", payload);
+
+    alert("Inquiry Saved Successfully");
+  } catch (error) {
+    console.error("Submit error:", error);
+  }
+};
 
   return (
     <div className="container mt-4">

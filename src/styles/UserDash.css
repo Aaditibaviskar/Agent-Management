@@ -1,0 +1,99 @@
+/* Sidebar */
+
+.sidebar {
+width: 280px;
+min-height: 100vh;
+background: linear-gradient(
+180deg,
+#0f172a,
+#1e293b
+);
+color: white;
+padding: 25px;
+box-shadow: 4px 0 15px rgba(0,0,0,0.2);
+}
+
+/* Logo */
+
+.sidebar h2 {
+text-align: center;
+color: #38bdf8;
+font-size: 28px;
+font-weight: 700;
+margin-bottom: 35px;
+}
+
+/* Menu */
+
+.sidebar ul {
+list-style: none;
+padding: 0;
+}
+
+.sidebar ul li {
+margin-bottom: 12px;
+}
+
+.sidebar ul li a {
+display: block;
+text-decoration: none;
+color: #e2e8f0;
+font-size: 18px;
+font-weight: 500;
+padding: 14px 18px;
+border-radius: 10px;
+transition: 0.3s;
+}
+
+.sidebar ul li a:hover {
+background: #2563eb;
+color: white;
+transform: translateX(5px);
+}
+
+/* Main Content */
+
+.main-content {
+flex: 1;
+background: #f8fafc;
+min-height: 100vh;
+}
+
+/* Top Navbar */
+
+.top-navbar {
+background: white;
+padding: 15px 25px;
+box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+border-bottom: 1px solid #e5e7eb;
+}
+
+.top-navbar h4 {
+margin: 0;
+color: #1e293b;
+font-weight: 600;
+}
+
+/* Page Content */
+
+.content-area {
+padding: 25px;
+}
+
+/* Footer */
+
+.sidebar-footer {
+margin-top: 60px;
+border-top: 1px solid #334155;
+padding-top: 20px;
+text-align: center;
+}
+
+.sidebar-footer h6 {
+color: #38bdf8;
+}
+
+.sidebar-footer p {
+color: #cbd5e1;
+font-size: 14px;
+}

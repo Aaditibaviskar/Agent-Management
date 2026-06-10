@@ -1,5 +1,6 @@
 import React from "react";
 import { Link, Outlet } from "react-router-dom";
+import "../../styles/UserDash.css";
 
 function Dashboard() {
   return (
@@ -7,7 +8,7 @@ function Dashboard() {
 
       {/* Sidebar */}
       <div
-        className="bg-dark text-white p-3"
+        className="sidebar"
         style={{ width: "250px", minHeight: "100vh" }}
       >
         <h4 className="mb-4">Real Estate CRM</h4>
