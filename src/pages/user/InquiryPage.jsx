@@ -27,15 +27,20 @@ function InquiryForm() {
   useEffect(() => {
     loadRegions();
   }, []);
+const loadRegions = async () => {
+  try {
+    const response = await axios.get("http://localhost:8080/regions");
 
-  const loadRegions = async () => {
-    try {
-      const response = await axios.get("http://localhost:8080/regions");
-      setRegions(response.data);
-    } catch (error) {
-      console.error("Error loading regions:", error);
-    }
-  };
+    console.log("Regions response:", response.data);
+    console.log("Type:", typeof response.data);
+    console.log("Is Array:", Array.isArray(response.data));
+
+    setRegions(response.data);
+  } catch (error) {
+    console.error("Error loading regions:", error);
+  }
+};
+  
 
   // ================= REGION CHANGE =================
   const handleRegionChange = async (e) => {

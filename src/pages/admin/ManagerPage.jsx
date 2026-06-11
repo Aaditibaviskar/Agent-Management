@@ -1,104 +1,192 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import {
+  getManagers,
+  deleteManager,
+  getRegions
+} from "../../services/managerService";
+
+import { useNavigate } from "react-router-dom";
 
 function ManagerPage() {
+  const [managers, setManagers] = useState([]);
+  const [statusFilter, setStatusFilter] = useState("ALL");
+  const [regionFilter, setRegionFilter] = useState("");
+  const [regions, setRegions] = useState([]);
 
-const [managers, setManagers] = useState([]);
-const [name, setName] = useState("");
-const [editingId, setEditingId] = useState(null);
+  const navigate = useNavigate();
 
-useEffect(() => {
-loadManagers();
-}, []);
+  useEffect(() => {
+    loadManagers();
+  }, []);
 
-const loadManagers = async () => {
-const res = await axios.get("http://localhost:8080/managers");
-setManagers(res.data);
-};
+  const loadManagers = async () => {
+    try {
+      //const res = await getManagers();
+      //setManagers(res.data);
+      const [managerRes, regionRes] = await Promise.all([getManagers(), getRegions()]);
+      setManagers(managerRes.data);
+      setRegions(regionRes.data);
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
-const saveManager = async () => {
+  const handleDelete = async (id) => {
+    if (window.confirm("Delete this manager?")) {
+      await deleteManager(id);
+      loadManagers();
+    }
+  };
 
+  const filteredManagers = managers.filter((manager) => {
 
-const manager = { name };
+  const regionMatch =
+    regionFilter === "" ||
+    manager.region?.regionId === Number(regionFilter);
 
-if (editingId) {
-  await axios.put(
-    `http://localhost:8080/managers/${editingId}`,
-    manager
+  const statusMatch =
+    statusFilter === "ALL" ||
+    String(manager.active).toUpperCase() === statusFilter;
+
+  return regionMatch && statusMatch;
+});
+
+  // const regions = [
+  //   ...new Set(
+  //     managers
+  //       .map((m) => m.region?.regionName)
+  //       .filter(Boolean)
+  //   )
+  // ];
+  const regionOptions = regions.map(r => r.regionName);
+
+  return (
+    <div className="container mt-4">
+
+      <div className="d-flex justify-content-between align-items-center mb-3">
+        <h2>Manager Management</h2>
+
+        <button
+          className="btn btn-primary"
+          onClick={() => navigate("/managers/add")}
+        >
+          Add Manager
+        </button>
+      </div>
+
+      <div className="row mb-3">
+
+        <div className="col-md-3">
+          <select
+  className="form-select"
+  value={regionFilter}
+  onChange={(e) => setRegionFilter(e.target.value)}
+>
+  <option value="">All Regions</option>
+
+  {regions.map((r) => (
+    <option key={r.regionId} value={r.regionId}>
+      {r.regionName}
+    </option>
+  ))}
+</select>
+        </div>
+
+        <div className="col-md-3">
+          <select
+            className="form-select"
+            value={statusFilter}
+            onChange={(e) =>
+              setStatusFilter(e.target.value)
+            }
+          >
+            <option value="ALL">
+              All Status
+            </option>
+
+            <option value="TRUE">
+              Active
+            </option>
+
+            <option value="FALSE">
+              Inactive
+            </option>
+          </select>
+        </div>
+
+      </div>
+
+      <table className="table table-bordered table-striped">
+
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Region</th>
+            <th>Status</th>
+            <th>Created</th>
+            <th>Updated</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+
+        <tbody>
+
+          {filteredManagers.map((manager) => (
+            <tr key={manager.userId}>
+              <td>{manager.userId}</td>
+              <td>{manager.name}</td>
+              <td>{manager.email}</td>
+              <td>{manager.phone}</td>
+
+              <td>
+                {manager.region?.regionName}
+              </td>
+
+              <td>
+                {manager.active
+                  ? "Active"
+                  : "Inactive"}
+              </td>
+
+              <td>{manager.createdAt}</td>
+
+              <td>
+                {manager.updatedAt || "-"}
+              </td>
+
+              <td>
+
+                <button
+                  className="btn btn-warning btn-sm me-2"
+                  onClick={() =>
+                    navigate(
+                      `/managers/edit/${manager.userId}`
+                    )
+                  }
+                >
+                  Edit
+                </button>
+
+                <button
+                  className="btn btn-danger btn-sm"
+                  onClick={() =>
+                    handleDelete(manager.userId)
+                  }
+                >
+                  Delete
+                </button>
+
+              </td>
+            </tr>
+          ))}
+
+        </tbody>
+      </table>
+    </div>
   );
-} else {
-  await axios.post(
-    "http://localhost:8080/managers",
-    manager
-  );
-}
-
-setName("");
-setEditingId(null);
-loadManagers();
-
-
-};
-
-const editManager = (manager) => {
-setEditingId(manager.id);
-setName(manager.name);
-};
-
-const deleteManager = async (id) => {
-await axios.delete(
-`http://localhost:8080/managers/${id}`
-);
-loadManagers();
-};
-
-return ( <div> <h2>Manager Management</h2>
-
-
-  <input
-    className="form-control"
-    placeholder="Manager Name"
-    value={name}
-    onChange={(e) => setName(e.target.value)}
-  />
-
-  <button
-    className="btn btn-primary mt-2"
-    onClick={saveManager}
-  >
-    {editingId ? "Update" : "Save"}
-  </button>
-
-  <table className="table mt-3">
-    <tbody>
-      {managers.map((m) => (
-        <tr key={m.id}>
-          <td>{m.id}</td>
-          <td>{m.name}</td>
-
-          <td>
-            <button
-              className="btn btn-warning me-2"
-              onClick={() => editManager(m)}
-            >
-              Edit
-            </button>
-
-            <button
-              className="btn btn-danger"
-              onClick={() => deleteManager(m.id)}
-            >
-              Delete
-            </button>
-          </td>
-        </tr>
-      ))}
-    </tbody>
-  </table>
-</div>
-
-
-);
 }
 
 export default ManagerPage;
