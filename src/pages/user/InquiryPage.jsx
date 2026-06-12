@@ -16,6 +16,7 @@ function InquiryForm() {
     email: "",
     regionId: "",
     propertyType: "",
+    measurementUnit: "",
     unitValue: "",
     budget: "",
     projectId: "",
@@ -116,17 +117,51 @@ const loadRegions = async () => {
       case "APARTMENT":
       case "VILLA":
       case "BUNGALOW":
-        return ["1 BHK", "2 BHK", "3 BHK", "4 BHK", "5 BHK"];
+        return [1, 2, 3, 4, 5].map((value) => ({
+          label: `${value} BHK`,
+          measurementUnit: "BHK",
+          unitValue: value
+        }));
 
-      case "LAND":
-        return ["1 Acre", "2 Acre", "3 Acre", "5 Acre", "10 Acre"];
+      case "PLOT":
+        return [1, 2, 3, 5, 10].map((value) => ({
+          label: `${value} Acre`,
+          measurementUnit: "ACRES",
+          unitValue: value
+        }));
 
       case "COMMERCIAL":
-        return ["500 Sq Ft", "1000 Sq Ft", "1500 Sq Ft", "2000 Sq Ft"];
+        return [500, 1000, 1500, 2000].map((value) => ({
+          label: `${value} Sq Ft`,
+          measurementUnit: "SQFT",
+          unitValue: value
+        }));
 
       default:
         return [];
     }
+  };
+
+  const handlePropertyTypeChange = (e) => {
+    const selectedType = e.target.value;
+
+    setPropertyType(selectedType);
+    setFormData({
+      ...formData,
+      propertyType: selectedType,
+      measurementUnit: "",
+      unitValue: ""
+    });
+  };
+
+  const handleRequirementChange = (e) => {
+    const [measurementUnit, unitValue] = e.target.value.split(":");
+
+    setFormData({
+      ...formData,
+      measurementUnit: measurementUnit || "",
+      unitValue: unitValue || ""
+    });
   };
 
   // ================= SUBMIT =================
@@ -144,14 +179,17 @@ const handleSubmit = async (e) => {
     regionId: Number(formData.regionId)
   },
 
-  project: {
-    projectId: Number(formData.projectId)
-  },
+  project: formData.projectId
+    ? { projectId: Number(formData.projectId) }
+    : null,
 
-  property: {
-    propertyId: Number(formData.propertyId)
-  },
+  property: formData.propertyId
+    ? { propertyId: Number(formData.propertyId) }
+    : null,
 
+  propertyType: inquiryType === "REQUIREMENT" ? formData.propertyType : null,
+  measurementUnit: inquiryType === "REQUIREMENT" ? formData.measurementUnit : null,
+  unitValue: inquiryType === "REQUIREMENT" ? Number(formData.unitValue) : 0,
   budget: Number(formData.budget),
   remarks: formData.remarks
 };
@@ -167,6 +205,7 @@ console.log(JSON.stringify(payload, null, 2));
     alert("Inquiry Saved Successfully");
   } catch (error) {
     console.error("Submit error:", error);
+    alert(error.response?.data?.message || "Failed to save inquiry");
   }
 };
 
@@ -240,13 +279,13 @@ console.log(JSON.stringify(payload, null, 2));
       <select
         className="form-control"
         value={propertyType}
-        onChange={(e) => setPropertyType(e.target.value)}
+        onChange={handlePropertyTypeChange}
       >
         <option value="">Select Type</option>
         <option value="APARTMENT">Apartment</option>
         <option value="VILLA">Villa</option>
         <option value="BUNGALOW">Bungalow</option>
-        <option value="LAND">Land</option>
+        <option value="PLOT">Plot</option>
         <option value="COMMERCIAL">Commercial</option>
       </select>
     </div>
@@ -254,11 +293,22 @@ console.log(JSON.stringify(payload, null, 2));
     {/* REQUIREMENT OPTIONS */}
     <div className="mb-3">
       <label>Requirement</label>
-      <select className="form-control">
+      <select
+        className="form-control"
+        value={
+          formData.measurementUnit && formData.unitValue
+            ? `${formData.measurementUnit}:${formData.unitValue}`
+            : ""
+        }
+        onChange={handleRequirementChange}
+      >
         <option value="">Select Requirement</option>
-        {getRequirementOptions().map((opt, index) => (
-          <option key={index} value={opt}>
-            {opt}
+        {getRequirementOptions().map((opt) => (
+          <option
+            key={`${opt.measurementUnit}-${opt.unitValue}`}
+            value={`${opt.measurementUnit}:${opt.unitValue}`}
+          >
+            {opt.label}
           </option>
         ))}
       </select>

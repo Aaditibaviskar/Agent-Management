@@ -27,7 +27,11 @@
 //   );
 // }
 
+<<<<<<< HEAD
 // export default App;
+=======
+//export default App;
+>>>>>>> 8897e1870ba13f82afe4661dabb07e0754fc0ca5
 
 import React from "react";
 import {
@@ -40,13 +44,22 @@ import {
 import AdminDashboard from "./pages/admin/AdminDashboard";
 
 import ManagerPage from "./pages/admin/ManagerPage";
+<<<<<<< HEAD
 import AgentPage from "./pages/admin/AgentPage";
+=======
+import ManagerFormPage from "./pages/admin/ManagerFormPage";
+import AgentPage from "./pages/admin/AgentPage";
+import AgentFormPage from "./pages/admin/AgentFormPage";
+>>>>>>> 8897e1870ba13f82afe4661dabb07e0754fc0ca5
 import RegionPage from "./pages/admin/RegionPage";
 import ProjectPage from "./pages/admin/ProjectPage";
 import PropertyPage from "./pages/admin/PropertyPage";
 import LeadPage from "./pages/admin/LeadPage";
 import ReportsPage from "./pages/admin/ReportsPage";
+<<<<<<< HEAD
 import AddManager from "./pages/admin/AddManager";
+=======
+>>>>>>> 8897e1870ba13f82afe4661dabb07e0754fc0ca5
 
 function App() {
   return (
@@ -73,15 +86,26 @@ function App() {
             path="managers"
             element={<ManagerPage />}
           />
+<<<<<<< HEAD
 
           <Route path="managers/add" 
           element={<AddManager />} 
           />
+=======
+           <Route path="managers/add" element={<ManagerFormPage />} />
+          <Route path="managers/edit/:id" element={<ManagerFormPage />} />
+          
+>>>>>>> 8897e1870ba13f82afe4661dabb07e0754fc0ca5
 
           <Route
             path="agents"
             element={<AgentPage />}
           />
+<<<<<<< HEAD
+=======
+          <Route path="/admin/agents/add" element={<AgentFormPage />} />
+          <Route path="/admin/agents/edit/:id" element={<AgentFormPage />} />
+>>>>>>> 8897e1870ba13f82afe4661dabb07e0754fc0ca5
 
           <Route
             path="regions"

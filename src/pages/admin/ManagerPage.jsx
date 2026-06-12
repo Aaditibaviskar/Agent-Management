@@ -67,11 +67,19 @@ function ManagerPage() {
         <h2>Manager Management</h2>
 
         <button
+<<<<<<< HEAD
           className="btn btn-primary"
           onClick={() => navigate("/managers/add")}
         >
           Add Manager
         </button>
+=======
+  className="btn btn-primary"
+  onClick={() => navigate("/admin/managers/add")}
+>
+  Add Manager
+</button>
+>>>>>>> 8897e1870ba13f82afe4661dabb07e0754fc0ca5
       </div>
 
       <div className="row mb-3">
@@ -160,6 +168,7 @@ function ManagerPage() {
               <td>
 
                 <button
+<<<<<<< HEAD
                   className="btn btn-warning btn-sm me-2"
                   onClick={() =>
                     navigate(
@@ -169,6 +178,15 @@ function ManagerPage() {
                 >
                   Edit
                 </button>
+=======
+  className="btn btn-warning btn-sm me-2"
+  onClick={() =>
+    navigate(`/admin/managers/edit/${manager.userId}`)
+  }
+>
+  Edit
+</button>
+>>>>>>> 8897e1870ba13f82afe4661dabb07e0754fc0ca5
 
                 <button
                   className="btn btn-danger btn-sm"
@@ -189,4 +207,8 @@ function ManagerPage() {
   );
 }
 
+<<<<<<< HEAD
 export default ManagerPage;
+=======
+export default ManagerPage;
+>>>>>>> 8897e1870ba13f82afe4661dabb07e0754fc0ca5
