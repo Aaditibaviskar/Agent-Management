@@ -1,9 +1,8 @@
 import React from "react";
 import { Link, Outlet, useNavigate, useLocation } from "react-router-dom";
 import { getCurrentUser, logout } from "../../services/authService";
-import "./AdminDash.css";
 
-function AdminDashboard() {
+function ManagerDashboard() {
   const navigate = useNavigate();
   const location = useLocation();
   const user = getCurrentUser();
@@ -13,26 +12,29 @@ function AdminDashboard() {
     navigate("/login", { replace: true });
   };
 
-const menu = [
-  { name: "📊 Dashboard", path: "/admin" },
-  { name: "👨‍💼 Managers", path: "/admin/managers" },
-  { name: "🧑‍💼 Agents", path: "/admin/agents" },
-  { name: "🌍 Regions", path: "/admin/regions" },
-  { name: "🏢 Projects", path: "/admin/projects" },
-  { name: "🏠 Properties", path: "/admin/properties" },
-  { name: "📋 Leads", path: "/admin/leads" },
-  { name: "📈 Reports", path: "/admin/reports" },
-];
+  const menu = [
+    { name: "Dashboard", path: "/manager/dashboard" },
+    { name: "Leads", path: "/manager/leads" },
+    { name: "Inquiry", path: "/manager/inquiry" },
+    { name: "Reports", path: "/manager/reports" },
+   { name: "Agents", path: "/manager/agents" }
+  ];
 
   return (
     <div className="d-flex">
 
       {/* SIDEBAR */}
       <div
-        className="sidebar bg-dark text-white p-3"
-        style={{ width: "250px", minHeight: "100vh", position: "fixed" }}
+        className="bg-dark text-white p-3"
+        style={{
+          width: "250px",
+          minHeight: "100vh",
+          position: "fixed",
+          left: 0,
+          top: 0,
+        }}
       >
-        <h3 className="text-center">Admin Panel</h3>
+        <h3 className="text-center">Manager Panel</h3>
 
         <p className="text-white-50 text-center">
           {user?.name} ({user?.role})
@@ -79,4 +81,4 @@ const menu = [
   );
 }
 
-export default AdminDashboard;
+export default ManagerDashboard;

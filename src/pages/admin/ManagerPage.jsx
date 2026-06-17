@@ -20,23 +20,29 @@ function ManagerPage() {
   }, []);
 
   const loadManagers = async () => {
-    try {
-      //const res = await getManagers();
-      //setManagers(res.data);
-      const [managerRes, regionRes] = await Promise.all([getManagers(), getRegions()]);
-      setManagers(managerRes.data);
-      setRegions(regionRes.data);
-    } catch (err) {
-      console.error(err);
-    }
-  };
+  try {
+    const [managerRes, regionRes] = await Promise.all([
+      getManagers(),
+      getRegions()
+    ]);
 
-  const handleDelete = async (id) => {
-    if (window.confirm("Delete this manager?")) {
-      await deleteManager(id);
-      loadManagers();
-    }
-  };
+    console.log("Managers Response:", managerRes.data);
+    console.log("Regions Response:", regionRes.data);
+
+    setManagers(managerRes.data);
+    setRegions(regionRes.data);
+
+  } catch (err) {
+    console.error("API Error:", err);
+  }
+};
+
+const handleDelete = async (id) => {
+  if (window.confirm("Delete this manager?")) {
+    await deleteManager(id);
+    loadManagers();
+  }
+};
 
   const filteredManagers = managers.filter((manager) => {
 

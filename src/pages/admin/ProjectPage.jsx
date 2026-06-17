@@ -1,49 +1,109 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import "./ProjectPage.css";
 
 function ProjectPage() {
 const [projects, setProjects] = useState([]);
-const [projectName, setProjectName] = useState("");
+//const [projectName, setProjectName] = useState("");
 const [editingId, setEditingId] = useState(null);
+const [regions, setRegions] = useState([]);
+//const [regionId, setRegionId] = useState("");
+const [filterRegionId, setFilterRegionId] = useState("");
+const [formData, setFormData] = useState({
+  projectName: "",
+  developerName: "",
+  regionId: "",
+  projectType: "",
+  projectStatus: "",
+  address: "",
+  description: "",
+  totalUnits: "",
+  launchDate: "",
+  expectedCompletionDate: ""
+});
 
 useEffect(() => {
-loadProjects();
+loadProjects(); loadRegions();
 }, []);
 
 const loadProjects = async () => {
 const res = await axios.get(
 "http://localhost:8080/projects"
 );
+console.log("RAW PROJECT RESPONSE:", res.data);
 setProjects(res.data);
 };
 
-const saveProject = async () => {
+const loadRegions = async () => {
+  const res = await axios.get(
+    "http://localhost:8080/regions"
+  );
 
-const project = {
-  projectName,
+  setRegions(res.data);
 };
 
-if (editingId) {
-  await axios.put(
-    `http://localhost:8080/projects/${editingId}`,
-    project
-  );
-} else {
-  await axios.post(
-    "http://localhost:8080/projects",
-    project
-  );
-}
+const saveProject = async (e) => {
+  e.preventDefault();
 
-setProjectName("");
-setEditingId(null);
-loadProjects();
+  const project = {
+    projectName: formData.projectName,
+    developerName: formData.developerName,
+    region: {
+      regionId: Number(formData.regionId)
+    },
+    projectType: formData.projectType,
+    projectStatus: formData.projectStatus,
+    address: formData.address,
+    description: formData.description,
+    totalUnits: Number(formData.totalUnits),
+    launchDate: formData.launchDate,
+    expectedCompletionDate: formData.expectedCompletionDate
+  };
 
-};
+  if (editingId) {
+    await axios.put(
+      `http://localhost:8080/projects/${editingId}`,
+      project
+    );
+  } else {
+    await axios.post(
+      "http://localhost:8080/projects",
+      project
+    );
+  }
+
+  setFormData({
+    projectName: "",
+    developerName: "",
+    regionId: "",
+    projectType: "",
+    projectStatus: "",
+    address: "",
+    description: "",
+    totalUnits: "",
+    launchDate: "",
+    expectedCompletionDate: ""
+  });
+
+  setEditingId(null);
+  loadProjects();
+};  
 
 const editProject = (project) => {
-setEditingId(project.projectId);
-setProjectName(project.projectName);
+  setEditingId(project.projectId);
+
+  setFormData({
+    projectName: project.projectName,
+    developerName: project.developerName,
+    regionId: project.region?.regionId || "",
+    projectType: project.projectType,
+    projectStatus: project.projectStatus,
+    address: project.address,
+    description: project.description,
+    totalUnits: project.totalUnits,
+    launchDate: project.launchDate,
+    expectedCompletionDate: project.expectedCompletionDate
+  });
 };
 
 const deleteProject = async (id) => {
@@ -52,43 +112,230 @@ await axios.delete(
 );
 
 loadProjects();
-
-
 };
 
+const handleChange = (e) => {
+  const { name, value } = e.target;
+
+  setFormData((prev) => ({
+    ...prev,
+    [name]: value
+  }));
+};
+
+console.log(projects);
+console.log(regions);
 return ( <div> <h2>Project Management</h2>
   
-  <h5>Add</h5>
-  <input
-    className="form-control"
-    placeholder="Project Name"
-    value={projectName}
-    onChange={(e) =>
-      setProjectName(e.target.value)
-    }
-  />
+  <form className="form-card" onSubmit={saveProject}>
+  <div className="row">
+    <div className="col-md-4 mb-3">
+    {/* Project Name */}
+    <label>Project Name</label>
+    <input
+      name="projectName"
+      label="Project Name"
+      value={formData.projectName}
+      onChange={handleChange}
+      placeholder="Project Name"
+    />
+    </div>
+    <div className="col-md-4 mb-3">
+    {/* Developer */}
+    <label>Developer</label>
+    <input
+      name="developerName"
+      label="Developer Name"
+      value={formData.developerName}
+      onChange={handleChange}
+      placeholder="Developer Name"
+    />
+    </div>
 
-  <button
-    className="btn btn-primary mt-2"
-    onClick={saveProject}
-  >
+    {/* Region */}
+    <div className="col-md-4 mb-3">
+      <label>Region</label>
+      <select
+        className="form-control"
+        name="regionId"
+        value={formData.regionId}
+        onChange={handleChange}
+        required
+      >
+        <option value="">Select Region</option>
+        {regions.map((r) => (
+          <option key={r.regionId} value={r.regionId}>
+            {r.regionName}
+          </option>
+        ))}
+      </select>
+    </div>
+
+    {/* Project Type */}
+    <div className="col-md-4 mb-3">
+      <label>Project Type</label>
+      <select
+        className="form-control"
+        name="projectType"
+        value={formData.projectType}
+        onChange={handleChange}
+      >
+        <option value="">Select Type</option>
+        <option value="RESIDENTIAL">Residential</option>
+        <option value="COMMERCIAL">Commercial</option>
+        <option value="MIXED_USE">Mixed Use</option>
+      </select>
+    </div>
+
+    {/* Project Status */}
+    <div className="col-md-4 mb-3">
+      <label>Project Status</label>
+      <select
+        className="form-control"
+        name="projectStatus"
+        value={formData.projectStatus}
+        onChange={handleChange}
+      >
+        <option value="">Select Status</option>
+        <option value="UPCOMING">Upcoming</option>
+        <option value="ONGOING">Ongoing</option>
+        <option value="COMPLETED">Completed</option>
+      </select>
+    </div>
+
+    {/* Address */}
+    <div className="col-md-4 mb-3">
+    <label>Address</label>
+    <input
+      name="address"
+      label="Address"
+      value={formData.address}
+      onChange={handleChange}
+      placeholder="Address"
+    />
+    </div>
+
+    {/* Description */}
+    <div className="col-md-4 mb-3">
+    <label>Description</label>
+    <input
+      name="description"
+      label="Description"
+      value={formData.description}
+      onChange={handleChange}
+      placeholder="Description"
+    />
+    </div>
+
+    {/* Total Units */}
+    <div className="col-md-4 mb-3">
+    <label>Total Unit</label>
+    <input
+      name="totalUnits"
+      label="Total Units"
+      value={formData.totalUnits}
+      onChange={handleChange}
+      placeholder="Total Units"
+    /> 
+    </div>
+
+    {/* Launch Date */}
+    <div className="col-md-4 mb-3">
+    <input
+      name="launchDate"
+      label="Launch Date"
+      type="date"
+      value={formData.launchDate}
+      onChange={handleChange}
+      placeholder="Launch Date"
+    />
+    </div>
+
+    {/* Expected Completion */}
+    <div className="col-md-4 mb-3">
+    <input
+      name="expectedCompletionDate"
+      label="Expected Completion"
+      type="date"
+      value={formData.expectedCompletionDate}
+      onChange={handleChange}
+      placeholder="Expected Completion Date"
+    />
+    </div>
+
+  </div>
+
+  <button className="btn btn-success me-2">
     {editingId ? "Update" : "Save"}
   </button>
+
+  {editingId && (
+    <button
+      type="button"
+      className="btn btn-secondary"
+      onClick={() => {
+        setEditingId(null);
+        setFormData({
+          projectName: "",
+          developerName: "",
+          regionId: "",
+          projectType: "",
+          projectStatus: "",
+          address: "",
+          description: "",
+          totalUnits: "",
+          launchDate: "",
+          expectedCompletionDate: ""
+        });
+      }}
+    >
+      Cancel
+    </button>
+  )}
+</form>
+
+  <select
+  className="form-select mt-3"
+  value={filterRegionId}
+  onChange={(e) =>
+    setFilterRegionId(e.target.value)
+  }
+>
+  <option value="">
+    All Regions
+  </option>
+
+  {regions.map((r) => (
+    <option
+      key={r.regionId}
+      value={r.regionId}
+    >
+      {r.regionName}
+    </option>
+  ))}
+</select>
 
   <table className="table mt-3">
     <thead>
       <tr>
         <th>ID</th>
         <th>Project Name</th>
+        <th>Region</th>
         <th>Action</th>
       </tr>
     </thead>
 
     <tbody>
-      {projects.map((p) => (
+      {projects.filter((p) =>!filterRegionId ||p.region?.regionId === Number(filterRegionId))
+      .map((p) => (
         <tr key={p.projectId}>
           <td>{p.projectId}</td>
           <td>{p.projectName}</td>
+          <td>
+            {
+              p.region?.regionName || "N/A"
+            }
+          </td>
 
           <td>
             <button
